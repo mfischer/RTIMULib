@@ -15,7 +15,28 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-ADD_LIBRARY(rtimu-cal SHARED
-    ${CMAKE_CURRENT_SOURCE_DIR}/RTIMULibCal.cpp)
+FIND_PACKAGE(Qt5Widgets)
 
-INSTALL(TARGETS rtimu-cal DESTINATION lib)
+IF(${Qt5Widgets_FOUND})
+
+SET(HOST_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/RTHostIMU.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
+SET(CMAKE_AUTOMOC ON)
+
+qt5_wrap_ui(UI_HEADERS RTHostIMU.ui)
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+ADD_EXECUTABLE(rt-host-imu ${HOST_SRCS} ${UI_HEADERS})
+TARGET_LINK_LIBRARIES(rt-host-imu
+    rtimu
+    rthostimu-common
+    ${Qt5Core_QTMAIN_LIBRARIES})
+
+qt5_use_modules(rt-host-imu Widgets)
+
+INSTALL(TARGETS rt-host-imu DESTINATION bin)
+ENDIF()

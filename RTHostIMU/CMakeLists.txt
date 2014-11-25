@@ -1,21 +1,33 @@
+# This file is part of RTIMULib
 #
-# Copyright 2014 Ettus Research LLC
+# Copyright (c) 2014 Ettus Research
+# Copyright (c) 2014 richards-tech
 #
-# This program is free software: you can redistribute it and/or modify
-# it under the terms of the GNU General Public License as published by
-# the Free Software Foundation, either version 3 of the License, or
-# (at your option) any later version.
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# This program is distributed in the hope that it will be useful,
-# but WITHOUT ANY WARRANTY; without even the implied warranty of
-# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-# GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License
-# along with this program.  If not, see <http://www.gnu.org/licenses/>.
-#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 
 FIND_PACKAGE(Qt4)
+FIND_PACKAGE(QExtSerial)
+
+IF(QT_FOUND AND QEXTSERIAL_FOUND)
+INCLUDE(${QT_USE_FILE})
+INCLUDE_DIRECTORIES(${QT_HEADERS})
+INCLUDE_DIRECTORIES(${QEXTSERIAL_INCLUDE_DIRS})
 
 SET(HOST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/RTHostIMU.cpp
@@ -28,10 +40,18 @@ QT4_WRAP_UI(UI_HEADERS RTHostIMU.ui)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 
-ADD_EXECUTABLE(rt-host-imu ${HOST_SRCS} ${UI_HEADERS})
-TARGET_LINK_LIBRARIES(rt-host-imu
-    rtimu
-    rthostimu-common
-    ${QT_CORE_LIBRARIES})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../RTHostIMUCommon)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../RTArduLinkHost)
 
-INSTALL(TARGETS rt-host-imu DESTINATION bin)
+ADD_EXECUTABLE(rtimu-host ${HOST_SRCS} ${UI_HEADERS} ${COMMON_SRCS})
+TARGET_LINK_LIBRARIES(rtimu-host
+    rtimu
+    rtimu-ardulink
+    rtimu-host-common
+    ${QT_LIBRARIES})
+
+INSTALL(TARGETS rtimu-host DESTINATION bin)
+MESSAGE(STATUS "RTHostIMU - enabled")
+ELSE(QT_FOUND AND QEXTSERIAL_FOUND)
+MESSAGE(STATUS "RTHostIMU - disabled")
+ENDIF(QT_FOUND AND QEXTSERIAL_FOUND)

@@ -17,8 +17,6 @@
 
 FIND_PACKAGE(Qt4)
 
-IF(${Qt4_FOUND})
-
 SET(HOST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/RTHostIMU.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
@@ -34,7 +32,6 @@ ADD_EXECUTABLE(rt-host-imu ${HOST_SRCS} ${UI_HEADERS})
 TARGET_LINK_LIBRARIES(rt-host-imu
     rtimu
     rthostimu-common
-    ${Qt5Core_QTMAIN_LIBRARIES})
+    ${QT_CORE_LIBRARIES})
 
 INSTALL(TARGETS rt-host-imu DESTINATION bin)
-ENDIF(${Qt4_FOUND})

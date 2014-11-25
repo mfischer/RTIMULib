@@ -15,9 +15,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-FIND_PACKAGE(Qt5Widgets)
+FIND_PACKAGE(Qt4)
 
-IF(${Qt5Widgets_FOUND})
+IF(${Qt4_FOUND})
 
 SET(HOST_SRCS
     ${CMAKE_CURRENT_SOURCE_DIR}/RTHostIMU.cpp
@@ -25,7 +25,7 @@ SET(HOST_SRCS
 
 SET(CMAKE_AUTOMOC ON)
 
-qt5_wrap_ui(UI_HEADERS RTHostIMU.ui)
+QT4_WRAP_UI(UI_HEADERS RTHostIMU.ui)
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
@@ -36,7 +36,5 @@ TARGET_LINK_LIBRARIES(rt-host-imu
     rthostimu-common
     ${Qt5Core_QTMAIN_LIBRARIES})
 
-qt5_use_modules(rt-host-imu Widgets)
-
 INSTALL(TARGETS rt-host-imu DESTINATION bin)
-ENDIF()
+ENDIF(${Qt4_FOUND})

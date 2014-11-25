@@ -12,19 +12,27 @@ SET(DEMO_SRCS
     SelectFusionDlg.cpp
     main.cpp)
 
-FIND_PACKAGE(Qt5Widgets)
-FIND_PACKAGE(Qt5Gui)
-SET(CMAKE_AUTOMOC ON)
+SET(DEMO_HEADERS
+    AccelCalDlg.h
+    MagCalDlg.h
+    SelectFusionDlg.h
+    IMUThread.h
+    RTIMULibDemo.h
+    SelectIMUDlg.h)
 
-qt5_wrap_ui(UI_HEADERS RTIMULibDemo.ui)
+FIND_PACKAGE(Qt4)
+INCLUDE(${QT_USE_FILE})
+
+QT4_WRAP_UI(UI_HEADERS RTIMULibDemo.ui)
+
+QT4_WRAP_CPP(HEADERS_MOC ${DEMO_HEADERS})
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+INCLUDE_DIRECTORIES(${QT_HEADERS})
 
-ADD_EXECUTABLE(rtimu-demo ${DEMO_SRCS} ${UI_HEADERS})
+ADD_EXECUTABLE(rtimu-demo ${DEMO_SRCS} ${UI_HEADERS} ${HEADERS_MOC})
 TARGET_LINK_LIBRARIES(rtimu-demo
-    rtimu)
-
-qt5_use_modules(rtimu-demo Widgets Gui)
+    rtimu ${QT_LIBRARIES})
 
 INSTALL(TARGETS rtimu-demo DESTINATION bin)

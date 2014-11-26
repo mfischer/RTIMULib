@@ -1,0 +1,61 @@
+# This file is part of RTIMULib
+#
+# Copyright (c) 2014 Ettus Research
+# Copyright (c) 2014 richards-tech
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
+FIND_PACKAGE(Qt4)
+FIND_PACKAGE(QExtSerial)
+
+IF(QT_FOUND AND QEXTSERIAL_FOUND)
+INCLUDE(${QT_USE_FILE})
+INCLUDE_DIRECTORIES(${QT_HEADERS})
+INCLUDE_DIRECTORIES(${QEXTSERIAL_INCLUDE_DIRS})
+
+SET(COMMON_SRCS
+    ${CMAKE_CURRENT_SOURCE_DIR}/AccelCalDlg.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/MagCalDlg.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/RTHostIMUThread.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/SelectFusionDlg.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/RTHostIMUClient.cpp
+)
+
+SET(COMMON_HEADERS
+    ${CMAKE_CURRENT_SOURCE_DIR}/AccelCalDlg.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/AccelCalDlg.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/MagCalDlg.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/RTArduLinkIMUDefs.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/RTHostIMUClient.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/RTHostIMUThread.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/SelectFusionDlg.h)
+
+QT4_WRAP_CPP(COMMON_MOC_HEADERS ${COMMON_HEADERS})
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
+
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../RTArduLinkHost)
+
+ADD_LIBRARY(rtimu-host-common SHARED ${COMMON_SRCS} ${COMMON_MOC_HEADERS})
+INSTALL(TARGETS rtimu-host-common DESTINATION bin)
+MESSAGE(STATUS "RTHostIMUCommon - enabled")
+ELSE(QT_FOUND AND QEXTSERIAL_FOUND)
+MESSAGE(STATUS "RTHostIMUCommon - disabled")
+ENDIF(QT_FOUND AND QEXTSERIAL_FOUND)
